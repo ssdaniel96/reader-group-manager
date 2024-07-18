@@ -8,9 +8,16 @@ builder.Services.AddMediator()
     .AddMapper();
 
 builder.Services.AddControllers();
+builder.Services.AddCors(config => config.AddDefaultPolicy(x =>
+{
+    x.AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowAnyOrigin();
+}));
 
 var app = builder.Build();
 
 app.MapControllers();
+app.UseCors();
 
 app.Run();
