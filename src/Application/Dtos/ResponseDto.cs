@@ -1,10 +1,27 @@
 namespace Application.Dtos;
 
-public record ResponseDto<T>
+
+public record ResponseDto
 {
-    public bool IsSuccessfully { get; private set; }
+    public bool IsSuccessfully { get; protected init; }
     public bool IsFailed => !IsSuccessfully;
-    public string? ErrorMessage { get; private set; } = null;
+    public string? ErrorMessage { get; protected set; } = null;
+
+    protected ResponseDto()
+    {
+        
+    }
+    
+    public ResponseDto(bool isSuccessfully, string? errorMessage = null)
+    {
+        IsSuccessfully = isSuccessfully;
+        ErrorMessage = errorMessage;
+    }
+}
+
+public record ResponseDto<T> : ResponseDto
+{
+
     public T? Data { get; private set; }
 
     public ResponseDto(bool isSuccessfully, T? data, string? errorMessage = null)

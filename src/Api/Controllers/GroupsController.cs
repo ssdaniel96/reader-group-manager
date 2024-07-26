@@ -1,49 +1,47 @@
 using Application.Contexts.Groups.Commands.CreateGroup;
+using Application.Contexts.Groups.Commands.RemoveGroup;
+using Application.Contexts.Groups.Dtos;
+using Application.Contexts.Groups.Queries.GetAllGroups;
+using Application.Contexts.Groups.Queries.GetGroupById;
+using Application.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
-[ApiController, Route("[controller]")]
+[ApiController]
+[Route("[controller]")]
 public class GroupsController(IMediator mediator) : ControllerBase
 {
-
     [HttpPost]
-    public async Task<ActionResult> CreateGroup([FromBody] CreateGroupCommand createGroupCommand)
+    public async Task<ActionResult<ResponseDto<Guid>>> CreateGroup([FromBody] CreateGroupCommand createGroupCommand)
     {
-        await mediator.Send(createGroupCommand);
-        
-        return Ok();
+        var result = await mediator.Send(createGroupCommand);
+
+        return Ok(result);
     }
 
-    [HttpPost("{id}/members")]
-    public ActionResult AddMembers(int id)
+    [HttpGet]
+    public async Task<ActionResult<ResponseDto<IEnumerable<GroupDto>>>> GetGroups()
     {
-        return Ok();
+        var result = await mediator.Send(new GetAllGroupsQuery());
+
+        return Ok(result);
     }
 
-    [HttpDelete("{id}/members")]
-    public ActionResult RemoveMembers(int id)
+    [HttpGet("{id}")]
+    public async Task<ActionResult<GroupDto?>> GetGroup(Guid id)
     {
-        return Ok();
+        var result = await mediator.Send(new GetGroupByIdQuery(id));
+
+        return Ok(result);
     }
 
-    [HttpPost("{id}/books")]
-    public ActionResult AddBook(int id)
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<ResponseDto>> DeleteGroup(Guid id)
     {
-        return Ok();
-    }
+        var result = await mediator.Send(new RemoveGroupCommand(id));
 
-    [HttpDelete("{id}/books")]
-    public ActionResult RemoveBook(int id)
-    {
-        return Ok();
+        return Ok(result);
     }
-
-    [HttpPut("{id}/books/{bookId}")]
-    public ActionResult UpdateBook(int id, int bookId)
-    {
-        return Ok();
-    }
-
 }
