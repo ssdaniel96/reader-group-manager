@@ -8,6 +8,8 @@ builder.Services.AddMediator()
     .AddMapper();
 
 builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 builder.Services.AddCors(config => config.AddDefaultPolicy(x =>
 {
     x.AllowAnyHeader()
@@ -16,6 +18,12 @@ builder.Services.AddCors(config => config.AddDefaultPolicy(x =>
 }));
 
 var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.MapControllers();
 app.UseCors();
