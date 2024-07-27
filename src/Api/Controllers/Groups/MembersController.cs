@@ -1,9 +1,13 @@
+using Application.Contexts.Groups.Commands.AddMembers;
+using Application.Contexts.Groups.Dtos;
+using Application.Dtos;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers.Groups;
 
 [ApiController, Route("groups/{groupId:guid}/[controller]")]
-public class MembersController : ControllerBase
+public class MembersController(IMediator mediator) : ControllerBase
 {
     [HttpGet]
     public ActionResult GetMembers(Guid groupId)
@@ -13,10 +17,11 @@ public class MembersController : ControllerBase
     }
     
     [HttpPost]
-    public ActionResult AddMembers(Guid groupId)
+    public async Task<ActionResult<ResponseDto<List<MemberDto>>>> AddMembers(AddMembersCommand addMembersCommand)
     {
+        var result = await mediator.Send(addMembersCommand);
         
-        return Ok();
+        return Ok(result);
     }
 
     [HttpDelete]
