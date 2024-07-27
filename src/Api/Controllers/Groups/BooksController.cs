@@ -1,31 +1,47 @@
+using Application.Contexts.Groups.Commands.AddBook;
+using Application.Contexts.Groups.Commands.RemoveBook;
+using Application.Contexts.Groups.Commands.UpdateBook;
+using Application.Contexts.Groups.Dtos;
+using Application.Contexts.Groups.Queries.GetBooks;
+using Application.Dtos;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers.Groups;
 
-[ApiController, Route("groups/{groupId:guid}/[controller]")]
-public class BooksController : ControllerBase
+[ApiController]
+[Route("groups/{groupId:guid}/[controller]")]
+public class BooksController(IMediator mediator) : ControllerBase
 {
     [HttpGet]
-    public ActionResult GetBooks(Guid groupId)
+    public async Task<ActionResult<List<BookDto>>> GetBooks(GetBooksQuery getBooksQuery)
     {
-        return Ok();
+        var result = await mediator.Send(getBooksQuery);
+
+        return Ok(result);
     }
-    
+
     [HttpPost]
-    public ActionResult AddBook(Guid groupId)
+    public async Task<ActionResult<ResponseDto<Guid>>> AddBook([FromBody] AddBookCommand addBookCommand)
     {
-        return Ok();
+        var result = await mediator.Send(addBookCommand);
+
+        return Ok(result);
     }
 
-    [HttpDelete]
-    public ActionResult RemoveBook(Guid groupId)
+    [HttpDelete("{bookId:guid}")]
+    public async Task<ActionResult<ResponseDto>> RemoveBook([FromRoute] RemoveBookCommand removeBookCommand)
     {
-        return Ok();
+        var result = await mediator.Send(removeBookCommand);
+
+        return Ok(result);
     }
 
-    [HttpPut]
-    public ActionResult UpdateBook(Guid groupId)
+    [HttpPut("{bookId:guid}")]
+    public async Task<ActionResult<ResponseDto<BookDto>>> UpdateBook(UpdateBookCommand updateBookCommand)
     {
-        return Ok();
+        var result = await mediator.Send(updateBookCommand);
+
+        return Ok(result);
     }
 }

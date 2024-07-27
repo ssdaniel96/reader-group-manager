@@ -8,7 +8,8 @@ public static class RepositoriesConfiguration
 {
     public static IServiceCollection AddRepositories(this IServiceCollection services)
     {
-        services.AddScoped<IGroupsRepository, GroupsRepository>();
+        services.AddScoped<IGroupsRepository, GroupsRepository>()
+            .AddScoped<IBooksRepository, BooksRepository>();
 
         return services;
     }
